@@ -1,13 +1,12 @@
-# Launch Meetup and Hack Night
-
-Refer to [Meetup page](https://www.meetup.com/redteamproject/events/259624820/) for details.
+# Google Cloud Platform Cyber Range 
 
 ## Artifacts
 
-* [Qwiklabs site](https://ce.qwiklabs.com/focuses/12629) (yes, the name doesn't make sense; I'm reusing another workshop)
+* [Qwiklabs site](https://ce.qwiklabs.com/focuses/12629) 
 * [Setup script](setup.sh), launch from Cloud Shell
 * [Blue Ansible playbook](blue.yml)
-* [Red Ansible playbook](red.yml)
+* [Red Ansible playbook](red.yml) ???
+* [Terraform script](main.tf)
 
 ## Instructions
 
