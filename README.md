@@ -15,8 +15,8 @@
 3. Clone this repo
 
 ```
-git clone https://github.com/redteam-project/meetup.git
-cd meetup/20190321
+git clone https://github.com/MikeStorrs/cyber.git
+cd cyber
 ```
 
 4. Run the setup script `./setup.sh`
