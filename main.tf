@@ -32,18 +32,13 @@ service_account {
  						   	else 
 								  touch /.initialboot
  								  yum install -y -q gcc git ansible python-pip wget;
-
-								  git clone https://github.com/redteam-project/meetup;
-								  git clone https://github.com/redteam-project/cyber-range-target;
-								  git clone https://github.com/redteam-project/exploit-curation;
-								  pip install lem;
 								  curl -X GET http://www.stainedproductions.com/~math/utils/shellshock_test.sh > shellshock_test.sh;
 								  chmod 755 shellshock_test.sh;
  							fi
 							EOF
 							
 metadata = {
-	enable-oslogin = "TRUE"
+	enable-oslogin = "FALSE"
 }		
 
 scheduling {

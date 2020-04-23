@@ -1,9 +1,0 @@
----
-- hosts: localhost
-  connection: local
-  become: true
-  tasks:
-    - name: install packages
-      yum:
-        name: nmap-ncat
-        state: latest
