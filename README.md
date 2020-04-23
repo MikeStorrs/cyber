@@ -24,7 +24,7 @@ terraform init
 terraform apply
 ```
 
-5. SSH to the blue 35370 instance `gcloud compute ssh blue-35370 --zone us-east4-a`
+5. SSH to the blue instance `gcloud compute ssh blue-35370 --zone us-east4-a`
 6. Accept SSH Key Generation and Set SSH Passphrase
 
 ```
@@ -43,7 +43,6 @@ git clone https://github.com/redteam-project/exploit-curation
 8. Run Ansible script to make this instance vulnerable to Shellshock and libfutex
 
 ```
-cd /
 sudo ansible-playbook cyber/blue35370.yml > ~/ansible.out
 ```
 
