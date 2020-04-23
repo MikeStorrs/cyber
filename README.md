@@ -19,28 +19,19 @@ git clone https://github.com/MikeStorrs/cyber.git
 cd cyber
 ```
 
-4. Run the setup script `./setup.sh`
-5. SSH to the blue instance `gcloud compute ssh blue-1 --zone us-east4-a`
-6. Update and install packages
+4. Use Terraform to deploy Cyber Range 
 
 ```
-sudo su -
-yum update -y
-yum install -y git ansible python-pip
+terraform init
+terraform apply
 ```
 
-7. Clone the `meetup`, `cyber-range-target`, and `exploit-curation` repos
+5. SSH to the blue 35370 instance `gcloud compute ssh blue-35370 --zone us-east4-a`
+6. Run Ansible script to make this instance vulnerable to Shellshock and libfutex
 
 ```
-git clone https://github.com/redteam-project/meetup
-git clone https://github.com/redteam-project/cyber-range-target
-git clone https://github.com/redteam-project/exploit-curation
-```
-
-8. Make this instance vulnerable to Shellshock and libfutex
-
-```
-ansible-playbook meetup/20190321/blue.yml
+cd \
+sudo ansible-playbook meetup/20190321/blue.yml
 ```
 
 9. Wait for the instance to reboot, then re-log in
