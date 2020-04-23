@@ -19,7 +19,7 @@ git clone https://github.com/MikeStorrs/cyber.git
 cd cyber
 ```
 
-4. Use Terraform to deploy Cyber Range 
+4. Use Terraform to Deploy Cyber Range 
 
 ```
 terraform init
