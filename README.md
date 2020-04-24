@@ -22,6 +22,8 @@ cd cyber
 ```
 terraform init
 terraform apply
+
+  Enter a value: yes
 ```
 
 5. SSH to the blue instance `gcloud compute ssh blue-35370 --zone us-east4-a`
@@ -57,7 +59,7 @@ sudo reboot
 10. Now scan for exploitable vulnerabilities with `lem`
 
 ```
-cd /
+gcloud compute ssh blue-35370 --zone us-east4-a
 sudo pip install lem
 sudo lem host assess --curation exploit-curation --kind stride --score 090000
 sudo lem exploit copy --id 35146 --source exploit-database --destination /var/www/html --curation exploit-curation
