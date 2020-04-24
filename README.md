@@ -1,11 +1,9 @@
-# Google Cloud Platform Cyber Range 
-
 # Shell Shock / libfutex Privilege Escalation Example
   
 This scenario can be used to train operators to leverage a Shell Shock vulnerability in a PHP web page, along with the 'libfutex' Local Privilege Escalation.
 
-https://www.exploit-db.com/exploits/35146
-https://www.exploit-db.com/exploits/35370
+- [Shell Shock](https://www.exploit-db.com/exploits/35146)
+- [libfutex](https://www.exploit-db.com/exploits/35370)
 
 ## Scenario features
 
